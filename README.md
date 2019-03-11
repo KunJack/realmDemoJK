@@ -63,38 +63,37 @@ a demo for realm use
 1. 建立继承自 `RLMObject` 的类
 2. RLMObject 子类的 +requiredProperties 方法以确定某些不为空的属性
     
-
-    + (NSArray *)requiredProperties {
-        return @[@"name"];
-    }
+       + (NSArray *)requiredProperties {
+           return @[@"name"];
+       }
 
 3. 重写 +primaryKey 可以设置模型的主键
    
 
-    + (NSString *)primaryKey {
+       + (NSString *)primaryKey {
         return @"id";
-    }
+       }
 
 4. 要为某个属性建立索引，那么重写 +indexedProperties 即可
 
 
-    + (NSArray *)indexedProperties {
+       + (NSArray *)indexedProperties {
         return @[@"title"];
-    }
+       }
 
 5. 被忽略属性
     
 
-    + (NSArray *)ignoredProperties {
+       + (NSArray *)ignoredProperties {
         return @[@"tmpID"];
-    }
+        } 
 
 6. 重写 +defaultPropertyValues， 可以在每次创建对象时为属性提供默认值
 
 
-     + (NSDictionary *)defaultPropertyValues {
+       + (NSDictionary *)defaultPropertyValues {
          return @{@"price" : @0, @"title": @""};
-     }
+       }
 
 # 写入事务
 
@@ -105,29 +104,28 @@ a demo for realm use
 1. 建立继承自 `RLMObject` 的类
 2. 使用该类初始化一个实例 **所有非可空属性必须在对象添加到 Realm 数据库之前完成赋值。**
 
+       // (1) 创建 Object 对象，然后设置其属性
+       Object *myObject = [[Object alloc] init];
+       myObject.name = @"Rex";
+       myObject.age = 10;
 
-     // (1) 创建 Object 对象，然后设置其属性
-    Object *myObject = [[Object alloc] init];
-    myObject.name = @"Rex";
-    myObject.age = 10;
+       // (2) 从字典中创建 Object 对象  
+       Object *myOtherObject = [[Object alloc] initWithValue:@{@"name" : @"Pluto", @"age" : @3}];
 
-    // (2) 从字典中创建 Object 对象  
-    Object *myOtherObject = [[Object alloc] initWithValue:@{@"name" : @"Pluto", @"age" : @3}];
-
-    // (3) 从数组中创建 Object 对象
-    Object *myThirdObject = [[Object alloc] initWithValue:@[@"Pluto", @3]];
+       // (3) 从数组中创建 Object 对象
+       Object *myThirdObject = [[Object alloc] initWithValue:@[@"Pluto", @3]];
 
 3. 数据库插入数据
 
 
-    [realm transactionWithBlock:^{
+       [realm transactionWithBlock:^{
         [realm addObject:ojc];
-    }];
+       }];
 
-    // 在事务中向 Realm 数据库中添加数据
-    [realm beginWriteTransaction];
-    [realm addObject:myDog];
-    [realm commitWriteTransaction];
+       // 在事务中向 Realm 数据库中添加数据
+       [realm beginWriteTransaction];
+       [realm addObject:myDog];
+       [realm commitWriteTransaction];
 
 4. 注意事项
     
@@ -141,15 +139,15 @@ a demo for realm use
 2. 删除
 
 
-    // 在事务中删除对象
-    [realm beginWriteTransaction];
-    [realm deleteObject:cheeseBook];
-    [realm commitWriteTransaction];
+       // 在事务中删除对象
+       [realm beginWriteTransaction];
+       [realm deleteObject:cheeseBook];
+       [realm commitWriteTransaction];
 
-    // 删除所有对象
-    [realm beginWriteTransaction];
-    [realm deleteAllObjects];
-    [realm commitWriteTransaction]; 
+       // 删除所有对象
+       [realm beginWriteTransaction];
+       [realm deleteAllObjects];
+       [realm commitWriteTransaction]; 
 
 
 #### 改
@@ -157,27 +155,27 @@ a demo for realm use
 1. 对象的自更新，修改某个对象的属性，会立即影响到所有指向该对象的其他实例
     
 
-    // 直接更新
-    Object *myObject = [[Object alloc] init];
-    myObject.name = @"Fido";
-    myObject.age = 1;
-    [realm transactionWithBlock:^{
-      [realm addObject:myObject];
-    }];
+        // 直接更新
+       Object *myObject = [[Object alloc] init];
+       myObject.name = @"Fido";
+       myObject.age = 1;
+       [realm transactionWithBlock:^{
+         [realm addObject:myObject];
+       }];
 
-    Object *myPuppy = [[Object objectsWhere:@"age == 1"] firstObject];
-    [realm transactionWithBlock:^{
-      myPuppy.age = 2;
-    }];
-    myObject.age; // => 2
+       Object *myPuppy = [[Object objectsWhere:@"age == 1"] firstObject];
+       [realm transactionWithBlock:^{
+        myPuppy.age = 2;
+       }];
+       myObject.age; // => 2
 
-    // 使用主键进行更新
-    Object *myObject = [[Object alloc] init];
-    myObject.name = @"name";
-    myObject.id = 1;
-    [realm beginWriteTransaction];
-    [realm addOrUpdateObject:myObject];
-    [realm commitWriteTransaction];
+       // 使用主键进行更新
+       Object *myObject = [[Object alloc] init];
+       myObject.name = @"name";
+       myObject.id = 1;
+       [realm beginWriteTransaction];
+       [realm addOrUpdateObject:myObject];
+       [realm commitWriteTransaction];
 
 
 
@@ -214,19 +212,19 @@ a demo for realm use
 4. 链式查询,个人认为最方便的api
 
 
-    RLMResults<Object *> *tanObjects = [Object objectsWhere:@"age =< 10"];
-    RLMResults<Object *> *tanObjectWithBNames = [tanObjects objectsWhere:@"name BEGINSWITH 'B'"];
+       RLMResults<Object *> *tanObjects = [Object objectsWhere:@"age =< 10"];
+       RLMResults<Object *> *tanObjectWithBNames = [tanObjects objectsWhere:@"name BEGINSWITH 'B'"];
 
 5. 限制查询结果，即SQLite 中的 “LIMIT” 关键字，但是Realm的特性决定了，realm不需要这种关键字，你只需要这样做：
 
 
-    // 循环读取出前 5 个 Dog 对象
-    // 从而限制从磁盘中读取的对象数量
-    RLMResults<Dog *> *dogs = [Dog allObjects];
-    for (NSInteger i = 0; i < 5; i++) {
-        Dog *dog = dogs[i];
-        // ...
-    }
+       // 循环读取出前 5 个 Dog 对象
+       // 从而限制从磁盘中读取的对象数量
+       RLMResults<Dog *> *dogs = [Dog allObjects];
+       for (NSInteger i = 0; i < 5; i++) {
+          Dog *dog = dogs[i];
+          // ...
+       }
 
 # 数据更新与迁移
 
