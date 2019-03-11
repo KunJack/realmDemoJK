@@ -18,7 +18,7 @@ a demo for realm use
 
    > Realm 数据库可以是本地化的，也可以是可同步的。
 
-1. clone or 下载 [Realm源码与Demo](https://github.com/realm/realm-cocoa) ，并且下载[Realm Browser](#https://itunes.apple.com/cn/app/realm-browser/id1007457278?mt=12)用于查看数据库，
+1. clone or 下载 [Realm源码与Demo](https://github.com/realm/realm-cocoa) ，并且下载 [Realm Browser](#https://itunes.apple.com/cn/app/realm-browser/id1007457278?mt=12) 用于查看数据库，
    
 2. 代码引入
     * 下载并解压源码后进入`realm-objc-3.13.1/ios/dynamic/`目录，将 Realm.framework 拖曳到 “Embedded Binaries” 部分内。请确保勾选了 Copy items if needed（除非项目中有多个平台都需要使用 Realm ），然后单击 Finish 按钮
@@ -26,7 +26,7 @@ a demo for realm use
     * Realm Swift，请将 Swift/RLMSupport.swift 文件拖曳到 Xcode 工程的文件导航栏中，请确保选中了 Copy items if needed 选择框；
     * 目标文件中引入 `#import <Realm/Realm.h>` 或者 `import Realm`
 
-3. 当然你以可以使用cocoapods进行导入，具体请参见 `https://realm.io/docs/objc/latest/`
+3. 当然你以可以使用cocoapods进行导入，具体请参见 `https://realm.io/docs/objc/latest/`
 
 4. 第一步，创建 `RLMRealmConfiguration` 对象，
     
